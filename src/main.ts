@@ -38,8 +38,6 @@ export type Staff = {
   combatNumber?: number
 }
 
-
-
 export type Technique = {
   id: number,
   kind: TechniqueKind
@@ -156,7 +154,11 @@ regionalAdministration = regionalAdministration.map((districtDepartment) =>
     ? {
       ...districtDepartment, departments: districtDepartment.departments.map((department) =>
         department.title === 'PASCH-1'
-          ? { ...department, personnel: [...department.personnel, ...PASCH1], technique: [...department.technique, ...PASCH1technique] }
+          ? {
+            ...department,
+            personnel: [...department.personnel, ...PASCH1],
+            technique: [...department.technique, ...PASCH1technique]
+          }
           : department
       )
     }
@@ -167,9 +169,53 @@ regionalAdministration = regionalAdministration.map((districtDepartment) =>
   districtDepartment.region === 'Buda-Koshelevo'
     ? {
       ...districtDepartment, departments: districtDepartment.departments.map((department) =>
-          department.title === 'PASP-11'
-          ? {...department, personnel: [...department.personnel, ...PASP11], technique: [...department.technique, ...PASP11technique]}
-        : department
+        department.title === 'PASP-11'
+          ? {
+            ...department,
+            personnel: [...department.personnel, ...PASP11],
+            technique: [...department.technique, ...PASP11technique]
+          }
+          : department
+      )
+    }
+    : districtDepartment
+)
+
+regionalAdministration = regionalAdministration.map((districtDepartment) =>
+  districtDepartment.region === 'Buda-Koshelevo'
+    ? {
+      ...districtDepartment, departments: districtDepartment.departments.map((department) =>
+        department.title === 'PASCH-1'
+          ? {
+            ...department, technique: department.technique.map((technique) =>
+              technique.status === TechniqueStatus.Ready && technique.name === 'AC-10.0'
+                ? {
+                  ...technique, crew: [...technique.crew, ...department.personnel.filter((person) =>
+                    person.combatNumber === 1
+                  )]
+                }
+                : technique
+            )
+          }
+          : department
+      )
+    }
+    : districtDepartment
+)
+
+regionalAdministration = regionalAdministration.map((districtDepartment) =>
+  districtDepartment.region === 'Buda-Koshelevo'
+    ? {
+      ...districtDepartment, departments: districtDepartment.departments.map((department) =>
+        department.title === 'PASCH-1'
+          ? {
+            ...department, technique: department.technique.map((technique) =>
+              technique.status === TechniqueStatus.Ready && (technique.name === 'AL-30-131' || technique.name === 'AC-131')
+                ? { ...technique, crew: [...technique.crew, ...department.personnel.filter((person) =>  person.combatNumber === 2)] }
+                : technique
+            )
+          }
+          : department
       )
     }
     : districtDepartment
